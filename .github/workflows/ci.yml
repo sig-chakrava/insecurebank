@@ -28,8 +28,6 @@ jobs:
       if: ${{steps.prescription.outputs.sastScan == 'true' }}
       run: |
           URL="https://api.github.com/repos/${{GITHUB_REPOSITORY}}/pulls/${{ github.event.pull_request.number }}/files"
-          echo ${{GITHUB_REPOSITORY}}
-          echo ${{ github.event.pull_request.number }}
           echo URL
           curl -s -X GET -G $URL-o output.txt
           cat output.txt
