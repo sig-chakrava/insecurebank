@@ -40,6 +40,7 @@ jobs:
           export POLARIS_FF_ENABLE_COVERITY_INCREMENTAL=true
           wget -q ${{ secrets.POLARIS_SERVER_URL }}/api/tools/polaris_cli-linux64.zip
           unzip -j -o polaris_cli-linux64.zip -d /tmp
+          chmod +x /tmp/polaris
           /tmp/polaris analyze -w --coverity-ignore-capture-failure --incremental polaris-files-to-scan.txt | tee polaris-output.txt
 
     - name: Software Composition Analysis with Black Duck
