@@ -42,7 +42,7 @@ jobs:
           unzip -j -o polaris_cli-macosx.zip -d /tmp
           export GIT_BRANCH=develop
           chmod +x /tmp/polaris
-          /tmp/polaris analyze -w
+          /tmp/polaris analyze -w --coverity-ignore-capture-failure --incremental polaris-files-to-scan.txt | tee polaris-output.txt
 
     - name: Software Composition Analysis with Black Duck
       if: ${{steps.prescription.outputs.scaScan == 'true' }}
