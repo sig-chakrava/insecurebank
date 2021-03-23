@@ -40,6 +40,7 @@ jobs:
           export POLARIS_FF_ENABLE_COVERITY_INCREMENTAL=true
           wget -q ${{ secrets.POLARIS_SERVER_URL }}/api/tools/polaris_cli-macosx.zip
           unzip -j -o polaris_cli-macosx.zip -d /tmp
+          export GIT_BRANCH=develop
           chmod +x /tmp/polaris
           /tmp/polaris analyze -w
 
