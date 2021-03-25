@@ -1,9 +1,8 @@
 name: Go
 on:
   push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+    branches: [ develop ]
+
 jobs:
   build:
     runs-on: self-hosted
@@ -27,7 +26,7 @@ jobs:
     - name: Incremental Static Analysis with Polaris
       if: ${{steps.prescription.outputs.sastScan == 'true' }}
       run: |
-          URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${{ github.event.pull_request.number }}/files"
+          URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/commits/${GITHUB_SHA}"
           echo $URL
           FILES=$(curl -s -X GET -G $URL | jq -r '.[] | .filename')
           echo $FILES | tr " " "\n" > polaris-files-to-scan.txt
