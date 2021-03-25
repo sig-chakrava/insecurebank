@@ -28,7 +28,7 @@ jobs:
       run: |
           URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/commits/${GITHUB_SHA}"
           echo $URL
-          FILES=$(curl -s -X GET -G $URL | jq -r '.[] | .filename')
+          FILES=$(curl -s -X GET -G $URL | jq -r '.files [] | .filename')
           echo $FILES | tr " " "\n" > polaris-files-to-scan.txt
           echo "wassup1!"
           echo "Files Changed -->"
