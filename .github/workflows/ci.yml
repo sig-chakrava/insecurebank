@@ -28,7 +28,7 @@ jobs:
       if: ${{steps.prescription.outputs.sastScan == 'true' }}
       continue-on-error: true
       run: |
-         cov-configure --java
+         $COV_BIN/cov-configure --java
          rm -rf temp
          $COV_BIN/cov-build --dir temp $BLDCMD
          $COV_BIN/cov-analyze --dir temp --ticker-mode none --strip-path $PWD $CHECKERS
