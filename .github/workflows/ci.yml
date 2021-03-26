@@ -31,6 +31,7 @@ jobs:
          echo $FILES | tr " " "\n" > polaris-files-to-scan.txt
          $COV_BIN/cov-configure --java
          rm -rf temp
+         mkdir temp
          $COV_BIN/cov-run-desktop --dir temp --stream iostream --all --webapp-security --ignore-uncapturable-inputs true --present-in-reference false --exit1-if-defects true --url https://io-coverity.dev.polaris.synopsys.com --user iouser --password Io2021@15243 @@polaris-files-to-scan.txt
 
     - name: Software Composition Analysis with Black Duck
