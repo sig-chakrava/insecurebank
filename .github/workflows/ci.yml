@@ -22,17 +22,17 @@ jobs:
         ioServerToken: ${{secrets.IO_SERVER_TOKEN}}        
         workflowServerUrl: ${{secrets.WORKFLOW_SERVER_URL}}
         prescriptionDownloadURL: ${{secrets.PRESCRIPTION_DOWNLOAD_URL}}
-        additionalWorkflowArgs: "--polaris.url=${{secrets.POLARIS_SERVER_URL}} --github.token=${{secrets.GH_ATOKEN}} --polaris.project.name=sig-chakrava/insecurebank --polaris.token=${{secrets.POLARIS_ACCESS_TOKEN}} --jira.auth.token=${{secrets.JIRA_TOKEN}} --sensitive.package.pattern='.*(.xml)' --jira.project.name=DEV --jira.api.url=https://dev-io.atlassian.net/rest/api/latest --jira.username=chakra.mithun@gmail.com --jira.issues.query=project=DEV --blackduck.project.name=insecure-bank:1.0.0 --blackduck.url=https://io-blackduck.dev.polaris.synopsys.com --blackduck.api.token=${{secrets.BLACKDUCK_TOKEN}}"
+        additionalWorkflowArgs: "--asset.id="github-insecurebank" --polaris.url=${{secrets.POLARIS_SERVER_URL}} --github.token=${{secrets.GH_ATOKEN}} --polaris.project.name=sig-chakrava/insecurebank --polaris.token=${{secrets.POLARIS_ACCESS_TOKEN}} --jira.auth.token=${{secrets.JIRA_TOKEN}} --sensitive.package.pattern='.*(.xml)' --jira.project.name=DEV --jira.api.url=https://dev-io.atlassian.net/rest/api/latest --jira.username=chakra.mithun@gmail.com --jira.issues.query=project=DEV --blackduck.project.name=insecure-bank:1.0.0 --blackduck.url=https://io-blackduck.dev.polaris.synopsys.com --blackduck.api.token=${{secrets.BLACKDUCK_TOKEN}}"
     
-    - name: Static Analysis with Coverity
+     - name: Incremental Analysis with Coverity
       if: ${{steps.prescription.outputs.sastScan == 'true' }}
       continue-on-error: true
       run: |
+         URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/commits/${GITHUB_SHA}"
+         FILES=$(curl -s -X GET -G $URL | jq -r '.files [] | .filename')
+         echo $FILES | tr " " "\n" > polaris-files-to-scan.txt
          $COV_BIN/cov-configure --java
-         rm -rf temp
-         $COV_BIN/cov-build --dir temp $BLDCMD
-         $COV_BIN/cov-analyze --dir temp --ticker-mode none --strip-path $PWD $CHECKERS
-         $COV_BIN/cov-format-errors --dir temp --json-output-v7 coverity-results.json
+         $COV_BIN/cov-run-desktop --dir temp --stream iostream --all --webapp-security --ignore-uncapturable-inputs true --present-in-reference false --exit1-if-defects true --url https://io-coverity.dev.polaris.synopsys.com --user iouser --password Io2021@15243 @@polaris-files-to-scan.txt
 
     - name: Software Composition Analysis with Black Duck
       if: ${{steps.prescription.outputs.scaScan == 'true' }}
